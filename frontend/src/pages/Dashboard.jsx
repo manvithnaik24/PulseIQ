@@ -56,7 +56,7 @@ import UserSettings from '../components/dashboard/UserSettings'
 import ReportHistory from '../components/dashboard/ReportHistory'
 import AnalysisResults from '../components/dashboard/AnalysisResults'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '${API_BASE_URL}'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
 
 function Dashboard() {
   const navigate = useNavigate()
