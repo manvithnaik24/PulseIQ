@@ -555,7 +555,14 @@ function Dashboard() {
       })
 
       if (!res.ok) {
-        throw new Error('Failed to fetch AI response.')
+        let detailMsg = 'Failed to fetch AI response.'
+        try {
+          const errBody = await res.json()
+          if (errBody && errBody.detail) {
+            detailMsg = errBody.detail
+          }
+        } catch (_) {}
+        throw new Error(detailMsg)
       }
 
       const data = await res.json()
@@ -599,7 +606,11 @@ function Dashboard() {
       ])
     } catch (err) {
       console.error(err)
-      const errorMsg = { id: Date.now() + 1, sender: 'ai', text: "Error: Could not connect to the clinical AI service." }
+      const errorMsg = { 
+        id: Date.now() + 1, 
+        sender: 'ai', 
+        text: `Error: ${err.message || 'Could not connect to the clinical AI service.'}` 
+      }
       setChatThreads(prev => prev.map(t => {
         if (t.id === activeThreadId) {
           return { ...t, messages: [...t.messages, errorMsg] }

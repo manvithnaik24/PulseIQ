@@ -27,27 +27,43 @@ provider_status = {
     }
 }
 
-if settings.GEMINI_API_KEY and settings.GEMINI_API_KEY != "your_gemini_api_key_here":
+# Log API key presence and state
+logger.info(f"Loading AI Provider credentials...")
+gemini_key_exists = bool(settings.GEMINI_API_KEY)
+groq_key_exists = bool(settings.GROQ_API_KEY)
+logger.info(f"Gemini API key configured: {gemini_key_exists}")
+logger.info(f"Groq API key configured: {groq_key_exists}")
+
+if gemini_key_exists and settings.GEMINI_API_KEY != "your_gemini_api_key_here":
     try:
         import google.generativeai as genai
+        # Show masked API key prefix for troubleshooting
+        masked_key = settings.GEMINI_API_KEY[:6] + "..." if len(settings.GEMINI_API_KEY) > 6 else "Configured"
+        logger.info(f"Initializing Gemini client with key prefix: {masked_key}")
         genai.configure(api_key=settings.GEMINI_API_KEY)
         gemini_enabled = True
-        logger.info("Gemini API enabled for PulseIQ AI service.")
+        logger.info("Gemini client successfully configured and enabled.")
     except Exception as e:
-        logger.error(f"Error configuring Gemini client: {e}")
+        logger.error(f"Error configuring Gemini client: {e}", exc_info=True)
         provider_status["gemini"]["healthy"] = False
         provider_status["gemini"]["last_failure_reason"] = str(e)
+else:
+    logger.warning("Gemini API key is missing or using placeholder value. Gemini service will be disabled.")
 
-if settings.GROQ_API_KEY and settings.GROQ_API_KEY != "your_groq_api_key_here":
+if groq_key_exists and settings.GROQ_API_KEY != "your_groq_api_key_here":
     try:
         from groq import Groq
+        masked_key = settings.GROQ_API_KEY[:6] + "..." if len(settings.GROQ_API_KEY) > 6 else "Configured"
+        logger.info(f"Initializing Groq client with key prefix: {masked_key}")
         groq_client = Groq(api_key=settings.GROQ_API_KEY)
         groq_enabled = True
-        logger.info("Groq API enabled as a fallback for PulseIQ AI service.")
+        logger.info("Groq client successfully configured and enabled.")
     except Exception as e:
-        logger.error(f"Error configuring Groq client: {e}")
+        logger.error(f"Error configuring Groq client: {e}", exc_info=True)
         provider_status["groq"]["healthy"] = False
         provider_status["groq"]["last_failure_reason"] = str(e)
+else:
+    logger.warning("Groq API key is missing or using placeholder value. Groq fallback service will be disabled.")
 
 
 def _call_gemini(prompt: str, json_mode: bool = False, media_data: Dict[str, Any] = None) -> str:
@@ -216,15 +232,8 @@ class AIService:
             data = json.loads(ai_output)
             return data["response"], data.get("structured_data", {})
         except Exception as e:
-            logger.error(f"AI Service error in generate_chat_response: {e}")
-            # Mock fallback data for out-of-the-box execution
-            mock_resp = f"I've received your query: '{message}'. To provide clinical insights, please sync your smartwatch vitals or specify active symptoms."
-            mock_struct = {
-                "recommended_actions": ["Monitor rest heart rate logs", "Keep hydration levels steady"],
-                "potential_conditions": [],
-                "severity": "Low"
-            }
-            return mock_resp, mock_struct
+            logger.error(f"AI Service error in generate_chat_response: {e}", exc_info=True)
+            raise e
 
     @staticmethod
     def analyze_symptoms(symptoms: str) -> Tuple[List[str], List[str], str]:
@@ -249,9 +258,8 @@ class AIService:
             data = json.loads(ai_output)
             return data.get("possible_conditions", []), data.get("recommendations", []), data.get("severity", "Low")
         except Exception as e:
-            logger.error(f"AI Service error in analyze_symptoms: {e}")
-            # Mock fallback symptom check
-            return ["Mild Viral Syndrome"], ["Rest, drink fluids, and monitor temperature."], "Low"
+            logger.error(f"AI Service error in analyze_symptoms: {e}", exc_info=True)
+            raise e
 
     @staticmethod
     def analyze_report(extracted_text: str, file_bytes: bytes = None, mime_type: str = None) -> Dict[str, Any]:
@@ -285,14 +293,5 @@ class AIService:
             provider, ai_output = _execute_ai_prompt(prompt, json_mode=True, media_data=media_data)
             return json.loads(ai_output)
         except Exception as e:
-            logger.error(f"AI Service error in analyze_report: {e}")
-            # Mock fallback report simplification
-            return {
-                "practitioner_name": "Dr. Sarah Jenkins",
-                "facility_name": "PulseIQ General Clinic",
-                "summary": "The lab results indicate basic metabolic parameters are normal. Lipid logs are slightly elevated but stable.",
-                "key_findings": ["Total Cholesterol: 210 mg/dL (Borderline High)", "Blood Sugar: 95 mg/dL (Normal)"],
-                "abnormal_values": ["LDL Cholesterol: 142 mg/dL (Elevated)"],
-                "risk_level": "Medium",
-                "recommendations": ["Minimize saturated fat intakes", "Re-test lipid levels in 3 months"]
-            }
+            logger.error(f"AI Service error in analyze_report: {e}", exc_info=True)
+            raise e
