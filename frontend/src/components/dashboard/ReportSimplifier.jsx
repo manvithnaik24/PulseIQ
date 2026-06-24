@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   FileText, 
@@ -263,7 +264,7 @@ export default function ReportSimplifier({
                   <p className="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest">Document Registry Details</p>
                   <div className="text-xs text-slate-600 font-semibold leading-relaxed p-4 bg-slate-50 border border-slate-100 rounded-2xl space-y-3">
                     <p><strong>Database ID:</strong> {activeReport.id}</p>
-                    <p><strong>Relative URL:</strong> <a href={`http://localhost:8000${activeReport.file_path}`} target="_blank" rel="noreferrer" className="text-primary underline hover:text-primary-hover font-bold">{activeReport.file_path}</a></p>
+                    <p><strong>Relative URL:</strong> <a href={`${API_BASE_URL}${activeReport.file_path}`} target="_blank" rel="noreferrer" className="text-primary underline hover:text-primary-hover font-bold">{activeReport.file_path}</a></p>
                     <p><strong>Clinical Text Snippet:</strong> {activeReport.simplified || "Raw extracted file content metadata pending review."}</p>
                   </div>
                 </div>

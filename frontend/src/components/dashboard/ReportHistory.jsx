@@ -1,4 +1,5 @@
 import React from 'react'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
 import { motion } from 'framer-motion'
 import { FileText, Eye, Trash2, Calendar, HardDrive, Shield, Sparkles } from 'lucide-react'
 
@@ -11,7 +12,7 @@ export default function ReportHistory({
   const handleViewFile = (url) => {
     if (!url) return
     // Ensure relative urls point to local backend port 8000
-    const fullUrl = url.startsWith('http') ? url : `http://localhost:8000${url}`
+    const fullUrl = url.startsWith('http') ? url : `${API_BASE_URL}${url}`
     window.open(fullUrl, '_blank')
   }
 

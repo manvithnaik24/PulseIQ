@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
 import { motion } from 'framer-motion'
 import { 
   User, 
@@ -41,7 +42,7 @@ export default function UserSettings({
     setCheckingDb(true)
     setDbStatus('checking')
     try {
-      const res = await fetch('http://localhost:8000/api/health/db')
+      const res = await fetch(`${API_BASE_URL}/api/health/db`)
       if (res.ok) {
         const data = await res.json()
         if (data.status === 'success') {

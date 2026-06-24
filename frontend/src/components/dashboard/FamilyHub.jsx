@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   Users, 
@@ -122,7 +123,7 @@ export default function FamilyHub({
 
     try {
       const token = await getToken()
-      const res = await fetch('http://localhost:8000/api/v1/family/add', {
+      const res = await fetch(`${API_BASE_URL}/api/v1/family/add`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -187,7 +188,7 @@ export default function FamilyHub({
 
     try {
       const token = await getToken()
-      const res = await fetch(`http://localhost:8000/api/v1/family/${editingMember.id}`, {
+      const res = await fetch(`${API_BASE_URL}/api/v1/family/${editingMember.id}`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -230,7 +231,7 @@ export default function FamilyHub({
 
     try {
       const token = await getToken()
-      const res = await fetch(`http://localhost:8000/api/v1/family/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/api/v1/family/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`

@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   FileText, 
@@ -46,7 +47,7 @@ export default function AnalysisResults({
 
   const handleViewFile = (url) => {
     if (!url) return
-    const fullUrl = url.startsWith('http') ? url : `http://localhost:8000${url}`
+    const fullUrl = url.startsWith('http') ? url : `${API_BASE_URL}${url}`
     window.open(fullUrl, '_blank')
   }
 
@@ -56,7 +57,7 @@ export default function AnalysisResults({
     setErrorText(null)
     try {
       const token = await getToken()
-      const response = await fetch(`http://localhost:8000/api/v1/reports/${activeReport.id}/pdf`, {
+      const response = await fetch(`${API_BASE_URL}/api/v1/reports/${activeReport.id}/pdf`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -88,7 +89,7 @@ export default function AnalysisResults({
     try {
       const fullUrl = activeReport.file_path.startsWith('http') 
         ? activeReport.file_path 
-        : `http://localhost:8000${activeReport.file_path}`
+        : `${API_BASE_URL}${activeReport.file_path}`
       
       const response = await fetch(fullUrl)
       if (!response.ok) throw new Error("Could not fetch original file data.")
@@ -105,7 +106,7 @@ export default function AnalysisResults({
       // Fallback to opening in a new tab if fetch is blocked
       const fullUrl = activeReport.file_path.startsWith('http') 
         ? activeReport.file_path 
-        : `http://localhost:8000${activeReport.file_path}`
+        : `${API_BASE_URL}${activeReport.file_path}`
       window.open(fullUrl, '_blank')
     } finally {
       setDownloadingOriginal(false)

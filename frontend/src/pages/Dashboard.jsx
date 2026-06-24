@@ -56,6 +56,8 @@ import UserSettings from '../components/dashboard/UserSettings'
 import ReportHistory from '../components/dashboard/ReportHistory'
 import AnalysisResults from '../components/dashboard/AnalysisResults'
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '${API_BASE_URL}'
+
 function Dashboard() {
   const navigate = useNavigate()
   const { isLoaded, userId, getToken, signOut } = useAuth()
@@ -226,7 +228,7 @@ function Dashboard() {
     }
 
     try {
-      const res = await fetch('http://localhost:8000/api/v1/medications/', {
+      const res = await fetch('${API_BASE_URL}/api/v1/medications/', {
         method: 'POST',
         headers,
         body: JSON.stringify({
@@ -284,7 +286,7 @@ function Dashboard() {
       // Optimistic update in UI
       setMedicines(prev => prev.map(m => m.id === id ? { ...m, taken: !m.taken } : m))
 
-      const res = await fetch('http://localhost:8000/api/v1/medications/taken', {
+      const res = await fetch('${API_BASE_URL}/api/v1/medications/taken', {
         method: 'POST',
         headers,
         body: JSON.stringify({ medication_id: id })
@@ -316,7 +318,7 @@ function Dashboard() {
     }
 
     try {
-      const res = await fetch(`http://localhost:8000/api/v1/medications/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/api/v1/medications/${id}`, {
         method: 'DELETE',
         headers
       })
@@ -546,7 +548,7 @@ function Dashboard() {
     setIsAiTyping(true)
 
     try {
-      const res = await fetch('http://localhost:8000/api/v1/ai/chat', {
+      const res = await fetch('${API_BASE_URL}/api/v1/ai/chat', {
         method: 'POST',
         headers,
         body: JSON.stringify({ message: textToSend })
@@ -662,7 +664,7 @@ function Dashboard() {
     }
 
     try {
-      const res = await fetch('http://localhost:8000/api/v1/symptoms/analyze', {
+      const res = await fetch('${API_BASE_URL}/api/v1/symptoms/analyze', {
         method: 'POST',
         headers,
         body: JSON.stringify({
@@ -823,7 +825,7 @@ function Dashboard() {
     const token = await getToken()
     if (!token) return
     try {
-      const res = await fetch('http://localhost:8000/api/v1/medications/', {
+      const res = await fetch('${API_BASE_URL}/api/v1/medications/', {
         headers: { 'Authorization': `Bearer ${token}` }
       })
       if (res.ok) {
@@ -852,7 +854,7 @@ function Dashboard() {
     const token = await getToken()
     if (!token) return
     try {
-      const res = await fetch('http://localhost:8000/api/v1/family/list', {
+      const res = await fetch('${API_BASE_URL}/api/v1/family/list', {
         headers: { 'Authorization': `Bearer ${token}` }
       })
       if (res.ok) {
@@ -881,7 +883,7 @@ function Dashboard() {
     const token = await getToken()
     if (!token) return
     try {
-      const res = await fetch('http://localhost:8000/api/v1/reports/', {
+      const res = await fetch('${API_BASE_URL}/api/v1/reports/', {
         headers: { 'Authorization': `Bearer ${token}` }
       })
       if (res.ok) {
@@ -914,7 +916,7 @@ function Dashboard() {
     const token = await getToken()
     if (!token) return
     try {
-      const res = await fetch('http://localhost:8000/api/v1/ai/history', {
+      const res = await fetch('${API_BASE_URL}/api/v1/ai/history', {
         headers: { 'Authorization': `Bearer ${token}` }
       })
       if (res.ok) {
@@ -968,7 +970,7 @@ function Dashboard() {
     const token = await getToken()
     if (!token) return
     try {
-      const res = await fetch('http://localhost:8000/api/v1/sos/history', {
+      const res = await fetch('${API_BASE_URL}/api/v1/sos/history', {
         headers: { 'Authorization': `Bearer ${token}` }
       })
       if (res.ok) {
@@ -1006,7 +1008,7 @@ function Dashboard() {
     try {
       const token = await getToken()
       if (!token) return
-      const res = await fetch('http://localhost:8000/api/v1/auth/me', {
+      const res = await fetch('${API_BASE_URL}/api/v1/auth/me', {
         headers: { 'Authorization': `Bearer ${token}` }
       })
       if (res.ok) {
@@ -1029,7 +1031,7 @@ function Dashboard() {
         // If we resolved better values from Clerk, sync them back to the database!
         if ((isNamePlaceholder && user?.fullName) || (isEmailPlaceholder && user?.primaryEmailAddress?.emailAddress)) {
           try {
-            await fetch('http://localhost:8000/api/v1/auth/me', {
+            await fetch('${API_BASE_URL}/api/v1/auth/me', {
               method: 'PUT',
               headers: {
                 'Authorization': `Bearer ${token}`,
@@ -1075,7 +1077,7 @@ function Dashboard() {
         const token = await getToken()
         if (!token || !active) return
 
-        socket = new WebSocket(`ws://localhost:8000/ws/health?token=${token}`)
+        socket = new WebSocket(`${API_BASE_URL.replace(/^http/, 'ws')}/ws/health?token=${token}`)
 
         socket.onopen = () => {
           console.log("WebSocket connected to PulseIQ live telemetry server.")
@@ -1243,7 +1245,7 @@ function Dashboard() {
 
     try {
       const token = await getToken()
-      await fetch('http://localhost:8000/api/v1/sos/resolve', {
+      await fetch('${API_BASE_URL}/api/v1/sos/resolve', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` }
       })
@@ -1296,7 +1298,7 @@ function Dashboard() {
         try {
           const token = await getToken()
           if (token) {
-            const updateRes = await fetch('http://localhost:8000/api/v1/location/update', {
+            const updateRes = await fetch('${API_BASE_URL}/api/v1/location/update', {
               method: 'POST',
               headers: {
                 'Authorization': `Bearer ${token}`,
@@ -1587,7 +1589,7 @@ function Dashboard() {
         ...prev
       ])
 
-      const res = await fetch('http://localhost:8000/api/v1/reports/generate', {
+      const res = await fetch('${API_BASE_URL}/api/v1/reports/generate', {
         method: 'POST',
         headers,
         body: JSON.stringify({
@@ -1637,9 +1639,9 @@ function Dashboard() {
 
     try {
       const urls = [
-        { url: `http://localhost:8000/api/v1/nearby/hospitals?latitude=${baseLat}&longitude=${baseLon}`, type: 'hospital' },
-        { url: `http://localhost:8000/api/v1/nearby/pharmacies?latitude=${baseLat}&longitude=${baseLon}`, type: 'pharmacy' },
-        { url: `http://localhost:8000/api/v1/nearby/ambulances?latitude=${baseLat}&longitude=${baseLon}`, type: 'ambulance' }
+        { url: `${API_BASE_URL}/api/v1/nearby/hospitals?latitude=${baseLat}&longitude=${baseLon}`, type: 'hospital' },
+        { url: `${API_BASE_URL}/api/v1/nearby/pharmacies?latitude=${baseLat}&longitude=${baseLon}`, type: 'pharmacy' },
+        { url: `${API_BASE_URL}/api/v1/nearby/ambulances?latitude=${baseLat}&longitude=${baseLon}`, type: 'ambulance' }
       ]
 
       const responses = await Promise.all(
@@ -1931,7 +1933,7 @@ function Dashboard() {
     formData.append('report_type', reportType)
 
     const xhr = new XMLHttpRequest()
-    xhr.open('POST', 'http://localhost:8000/api/v1/reports/upload')
+    xhr.open('POST', '${API_BASE_URL}/api/v1/reports/upload')
     xhr.setRequestHeader('Authorization', `Bearer ${token}`)
 
     xhr.upload.onprogress = (event) => {
@@ -2009,7 +2011,7 @@ function Dashboard() {
       'Content-Type': 'application/json'
     }
 
-    const res = await fetch('http://localhost:8000/api/v1/reports/analyze', {
+    const res = await fetch('${API_BASE_URL}/api/v1/reports/analyze', {
       method: 'POST',
       headers,
       body: JSON.stringify({
@@ -2060,7 +2062,7 @@ function Dashboard() {
     }
 
     try {
-      const res = await fetch(`http://localhost:8000/api/v1/reports/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/api/v1/reports/${id}`, {
         method: 'DELETE',
         headers
       })
@@ -2177,7 +2179,7 @@ function Dashboard() {
     const sendSosAlert = async (lat, lon) => {
       try {
         const token = await getToken()
-        const res = await fetch('http://localhost:8000/api/v1/sos/trigger', {
+        const res = await fetch('${API_BASE_URL}/api/v1/sos/trigger', {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -2239,7 +2241,7 @@ function Dashboard() {
       const token = await getToken()
       if (!token) return
 
-      const response = await fetch('http://localhost:8000/api/v1/auth/me', {
+      const response = await fetch('${API_BASE_URL}/api/v1/auth/me', {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
