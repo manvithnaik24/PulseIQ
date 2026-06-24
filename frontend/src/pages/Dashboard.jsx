@@ -525,6 +525,11 @@ function Dashboard() {
     }
 
     const token = await getToken()
+    console.log("Token verification diagnostic:")
+    console.log("- Token exists:", !!token)
+    console.log("- Token length:", token ? token.length : 0)
+    console.log("- Token prefix (first 20 chars):", token ? token.substring(0, 20) : "N/A")
+
     const headers = {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
