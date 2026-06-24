@@ -33,6 +33,10 @@ def run_assistant_chat(
     db: Session = Depends(get_db)
 ):
     """Submits conversational prompt to Gemini AI and logs the dialog logs."""
+    import logging
+    logger = logging.getLogger("pulseiq.ai")
+    logger.info(f"POST /api/v1/ai/chat requested by User ID: {current_user.id}. Message prompt size: {len(prompt_in.message)} chars")
+    
     # 1. Log User Message
     user_msg = ChatMessage(
         user_id=current_user.id,
