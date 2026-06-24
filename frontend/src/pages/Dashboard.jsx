@@ -2109,13 +2109,19 @@ function Dashboard() {
 
   // Settings / Profile Info State
   const [profileName, setProfileName] = useState(() => {
-    const user = getStoredUser()
-    return user?.name || 'Sarah Jenkins'
+    return user?.fullName || 'Patient Profile'
   })
   const [profileEmail, setProfileEmail] = useState(() => {
-    const user = getStoredUser()
-    return user?.email || 'sarah@example.com'
+    return user?.primaryEmailAddress?.emailAddress || ''
   })
+
+  // Sync profile details as soon as Clerk user details resolve
+  useEffect(() => {
+    if (user) {
+      if (user.fullName) setProfileName(user.fullName)
+      if (user.primaryEmailAddress?.emailAddress) setProfileEmail(user.primaryEmailAddress.emailAddress)
+    }
+  }, [user])
   const [profileAge, setProfileAge] = useState(() => {
     const user = getStoredUser()
     if (user?.dob) {
@@ -2363,9 +2369,13 @@ function Dashboard() {
             className={`flex items-center cursor-pointer hover:bg-slate-50 rounded-xl transition-all ${isSidebarCollapsed ? 'justify-center p-1' : 'gap-3 p-2'}`}
             title="Account Settings"
           >
-            <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-sm shrink-0">
-              {getInitials(profileName)}
-            </div>
+            {user?.imageUrl ? (
+              <img src={user.imageUrl} alt={profileName} className="w-10 h-10 rounded-full object-cover shrink-0" />
+            ) : (
+              <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-sm shrink-0">
+                {getInitials(profileName)}
+              </div>
+            )}
             {!isSidebarCollapsed && (
               <div className="min-w-0 flex-1">
                 <p className="text-xs text-slate-400 font-semibold">Logged in as</p>
@@ -2480,9 +2490,13 @@ function Dashboard() {
 
               <div className="pt-6 border-t border-slate-100 space-y-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-xs">
-                    {getInitials(profileName)}
-                  </div>
+                  {user?.imageUrl ? (
+                    <img src={user.imageUrl} alt={profileName} className="w-9 h-9 rounded-full object-cover shrink-0" />
+                  ) : (
+                    <div className="w-9 h-9 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-xs">
+                      {getInitials(profileName)}
+                    </div>
+                  )}
                   <div>
                     <p className="text-[10px] text-slate-400 font-semibold">Logged in as</p>
                     <p className="text-xs font-bold text-slate-800 truncate max-w-[140px]">{profileName}</p>
@@ -2614,9 +2628,13 @@ function Dashboard() {
                 onClick={() => setShowProfileMenu(!showProfileMenu)}
                 className="flex items-center gap-2 border border-slate-200 bg-white p-1 pr-3 rounded-full hover:border-primary/25 transition-all"
               >
-                <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-xs">
-                  {getInitials(profileName)}
-                </div>
+                {user?.imageUrl ? (
+                  <img src={user.imageUrl} alt={profileName} className="w-8 h-8 rounded-full object-cover shrink-0" />
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-xs">
+                    {getInitials(profileName)}
+                  </div>
+                )}
                 <span className="text-xs font-bold text-slate-700">{profileName}</span>
               </button>
 

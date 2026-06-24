@@ -109,7 +109,7 @@ export default function UserSettings({
                 required
                 value={profileName}
                 onChange={(e) => setProfileName(e.target.value)}
-                placeholder="E.g., Sarah Jenkins"
+                placeholder="Enter your full name"
                 className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-primary outline-none transition-all font-semibold"
               />
             </div>
@@ -124,7 +124,7 @@ export default function UserSettings({
                 required
                 value={profileEmail}
                 onChange={(e) => setProfileEmail(e.target.value)}
-                placeholder="E.g., sarah@example.com"
+                placeholder="Enter your email address"
                 className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-primary outline-none transition-all font-semibold bg-slate-55/30"
               />
             </div>
