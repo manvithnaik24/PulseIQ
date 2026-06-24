@@ -1,0 +1,65 @@
+# ──────────────────────────────────────────────────────────────
+# PulseIQ — .gitignore
+# ──────────────────────────────────────────────────────────────
+
+# ── Python Virtual Environments ───────────────────────────────
+.venv/
+env/
+venv/
+ENV/
+
+# ── Python Cache ──────────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pycache
+
+# ── Node / Vite ───────────────────────────────────────────────
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# ── Environment Files (NEVER commit real secrets) ────────────
+# .env.example files ARE safe to commit — they have no real values
+.env
+.env.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+.env.production
+.env.production.local
+.env.staging
+
+# ── Databases ─────────────────────────────────────────────────
+healthguard.db
+pulseiq.db
+*.db
+*.sqlite
+*.sqlite3
+
+# ── Uploaded Static Files (user uploads stored on disk) ───────
+backend/static/reports/
+backend/static/uploads/
+
+# ── System & IDE ──────────────────────────────────────────────
+.DS_Store
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ── Logs ──────────────────────────────────────────────────────
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ── Vite cache ────────────────────────────────────────────────
+.vite/

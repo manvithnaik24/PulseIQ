@@ -1,0 +1,55 @@
+services:
+  # 1. Backend API Service
+  - type: web
+    name: pulseiq-backend
+    env: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    plan: free
+    envVars:
+      - key: DATABASE_URI
+        fromDatabase:
+          name: pulseiq-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ENVIRONMENT
+        value: production
+      - key: CLERK_JWKS_URL
+        sync: false
+      - key: CLERK_WEBHOOK_SECRET
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: TWILIO_ACCOUNT_SID
+        sync: false
+      - key: TWILIO_AUTH_TOKEN
+        sync: false
+      - key: TWILIO_FROM_NUMBER
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: RESEND_FROM_EMAIL
+        value: onboarding@resend.dev
+
+  # 2. Frontend Static Site Service
+  - type: web
+    name: pulseiq-frontend
+    env: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    publishDir: dist
+    plan: free
+    envVars:
+      - key: VITE_CLERK_PUBLISHABLE_KEY
+        sync: false
+      - key: VITE_API_BASE_URL
+        value: https://pulseiq-backend.onrender.com
+
+databases:
+  # 3. PostgreSQL Database
+  - name: pulseiq-db
+    plan: free

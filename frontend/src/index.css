@@ -1,0 +1,145 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #1E53FF;
+  --color-primary-hover: #003BFF;
+  --color-secondary: #FFFFFF;
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-danger: #EF4444;
+  --color-slate-50: #F8FAFC;
+  --color-slate-100: #F1F5F9;
+  --color-slate-200: #E2E8F0;
+  --color-slate-300: #CBD5E1;
+  --color-slate-400: #94A3B8;
+  --color-slate-500: #64748B;
+  --color-slate-800: #1E293B;
+  --color-slate-900: #0F172A;
+  --color-bg-custom: #F8FAFC;
+  
+  --font-sans: 'Inter', 'Outfit', system-ui, -apple-system, sans-serif;
+  
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-pulse-subtle: pulse-subtle 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.92; transform: scale(0.99); }
+}
+
+/* Glassmorphism premium card utility */
+.glass-card {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 4px 30px 0 rgba(30, 83, 255, 0.015);
+}
+
+.glass-nav {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.7);
+  box-shadow: 0 1px 0 0 rgba(226, 232, 240, 0.5), 0 4px 20px 0 rgba(30, 83, 255, 0.04);
+}
+
+/* Premium dot grid overlay for hero */
+.hero-grid-bg {
+  background-image: radial-gradient(circle, rgba(30, 83, 255, 0.08) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* Glowing stat badge */
+.stat-glow {
+  box-shadow: 0 0 0 1px rgba(30, 83, 255, 0.08), 0 2px 12px 0 rgba(30, 83, 255, 0.06);
+}
+
+.glass-input {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(226, 232, 240, 1);
+  transition: all 0.15s ease-in-out;
+}
+
+.glass-input:focus {
+  border-color: #1E53FF;
+  box-shadow: 0 0 0 4px rgba(30, 83, 255, 0.08);
+  outline: none;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(79, 140, 255, 0.2);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(79, 140, 255, 0.4);
+}
+
+/* General Layout Rules */
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-bg-custom);
+  color: #1E293B;
+  overflow-x: hidden;
+}
+
+@keyframes emergency-pulse {
+  0%, 100% { background-color: rgb(69, 10, 10); }
+  50% { background-color: rgb(153, 27, 27); }
+}
+
+.animate-emergency {
+  animation: emergency-pulse 1.2s ease-in-out infinite;
+}
+
+/* Print rules for Auto Health Report Generator */
+@media print {
+  html, body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+  
+  /* Force background colors and gradients to print */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Make sure the document container covers the whole print page */
+  .print-report-sheet {
+    background: #ffffff !important;
+    color: #1e293b !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 2.5rem !important;
+    margin: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    page-break-after: always;
+  }
+}
